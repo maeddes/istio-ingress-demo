@@ -65,7 +65,12 @@ istio-telemetry-59bf8b5b5f-xg4sw          2/2     Running     3          10m
 prometheus-7d7b9f7844-8klnp               1/1     Running     0          10m
 ```
 
+Build the app:
 
+`RestEndpoint/mvnw clean install -f RestEndpoint/pom.xml`
 
+Build the container:
+
+`docker build -t maeddes/dynamic-api-app:v0.1 .`
 
 
