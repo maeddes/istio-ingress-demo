@@ -73,4 +73,59 @@ Build the container:
 
 `docker build -t maeddes/dynamic-api-app:v0.1 .`
 
+Output validation:
 
+```
+Sending build context to Docker daemon  19.59MB
+Step 1/5 : FROM openjdk:8-jre-alpine
+ ---> f7a292bbb70c
+Step 2/5 : RUN mkdir -p /opt/RestEndpoint
+ ---> Using cache
+ ---> fc7d4c4fdf8b
+Step 3/5 : WORKDIR /opt/RestEndpoint
+ ---> Using cache
+ ---> 4103e23341d1
+Step 4/5 : COPY RestEndpoint/target/RestEndpoint-0.0.1-SNAPSHOT.jar /opt/RestEndpoint
+ ---> 39b8327dc6f3
+Step 5/5 : CMD ["java", "-jar", "RestEndpoint-0.0.1-SNAPSHOT.jar"]
+ ---> Running in 98552e3d2558
+Removing intermediate container 98552e3d2558
+ ---> 8288a535e158
+Successfully built 8288a535e158
+Successfully tagged maeddes/dynamic-api-app:v0.1
+```
+
+Kubernetes deployment:
+
+```
+kubectl apply -f kubernetes/deploy-v1.yml
+deployment.extensions/apiapp created
+```
+
+Check pods:
+
+```
+kubectl get pods
+NAME                      READY   STATUS    RESTARTS   AGE
+apiapp-74549b849b-cn2sg   1/1     Running   0          2m4s
+```
+
+Port-forward validation (needs replacement with own pod name):
+
+```
+kubectl port-forward apiapp-74549b849b-cn2sg 8080:8080
+Forwarding from 127.0.0.1:8080 -> 8080
+Forwarding from [::1]:8080 -> 8080
+```
+
+In separate terminal:
+
+```
+curl localhost:8080/test
+this is static endpoint /test. api.endpoint is set to: /matthias
+
+curl localhost:8080/matthias
+saying Hello from: /matthias
+```
+
+You can change the API/REST Endpoint in the deploy-v1.yml
