@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: apiapp
+  name: apiapp
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apiapp
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: apiapp
+    spec:
+      containers:
+      - env:
+        - name: API_ENDPOINT
+          value: /matthias
+        image: maeddes/dynamic-api-app:v0.1
+        imagePullPolicy: IfNotPresent
+        name: apiapp
+      restartPolicy: Always
