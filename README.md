@@ -1,6 +1,12 @@
 # istio-ingress-demo
 
-Add Repo:
+Change to the root directory of this repo
+
+Download:
+
+`curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.3.4 sh -`
+
+Add Helm Repo:
 
 `helm repo add istio.io https://storage.googleapis.com/istio-release/releases/1.3.4/charts/`
 
@@ -9,10 +15,6 @@ Add Repo:
 Create namespace:
 
 `kubectl create namespace istio-system`
-
-Download (not sure if required):
-
-`curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.3.4 sh -\n`
 
 Install CRDs:
 
