@@ -128,4 +128,14 @@ curl localhost:8080/matthias
 saying Hello from: /matthias
 ```
 
-You can change the API/REST Endpoint in the deploy-v1.yml
+You can change the API/REST Endpoint in the deploy-v1.yml file.
+The `API_ENDPOINT` variable specifies the endpoint. Requires redeployment.
+
+```
+    spec:
+      containers:
+      - env:
+        - name: API_ENDPOINT
+          value: /matthias
+``` 
+
