@@ -221,3 +221,37 @@ virtualservice.networking.istio.io/demo-virtualservice   [demo-gateway]   [*]   
 
 With this virtual service configuration all endpoints under / will be mapped.
 
+To find out the IP/hostname of your Istio Ingress gateway execute 
+
+'kubectl get svc istio-ingressgateway -n istio-system -o json'
+
+At the end of the statement you should see
+
+```json
+"status": {
+        "loadBalancer": {
+            "ingress": [
+                {
+                    "hostname": "localhost"
+                }
+            ]
+        }
+    }
+```
+
+In case of Docker for Windows/Mac, it will be "localhost", otherwise you will get an IP address.
+This should let you curl the endpoints without port specification.
+
+```bash
+curl localhost/matthias
+saying Hello from: /matthias
+
+curl localhost/test
+this is static endpoint /test. api.endpoint is set to: /matthias
+```
+
+
+
+
+
+
