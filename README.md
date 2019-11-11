@@ -128,7 +128,7 @@ curl localhost:8080/matthias
 saying Hello from: /matthias
 ```
 
-You can change the API/REST Endpoint in the deploy-v1.yml file.
+The API/REST Endpoint is set in the deploy-v1.yml file.
 The `API_ENDPOINT` variable specifies the endpoint. Requires redeployment.
 
 ```
@@ -138,6 +138,13 @@ The `API_ENDPOINT` variable specifies the endpoint. Requires redeployment.
         - name: API_ENDPOINT
           value: /matthias
 ``` 
+
+Expose deployment as ClusterIP service:
+
+```
+kubectl expose deploy apiapp --port=8080
+service/apiapp exposed
+```
 
 Deployment of Istio gateway:
 
@@ -164,3 +171,53 @@ spec:
       number: 80
       protocol: HTTP
  ```
+ 
+Deployment of Istio virtual service:
+ 
+```
+kubectl apply -f istio/virtualservice.yml
+virtualservice.networking.istio.io/demo-virtualservice created
+````
+
+content of file:
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: demo-virtualservice
+spec:
+  hosts:
+  - '*'
+  gateways:
+  - demo-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: apiapp.default.svc.cluster.local
+        port:
+          number: 8080
+```
+
+The output of `kubectl get deployment,service,gateway,virtualservice`should look like this:
+
+```
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.extensions/apiapp   1/1     1            1           18h
+
+NAME                 TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+service/apiapp       ClusterIP   10.104.199.1   <none>        8080/TCP   2m43s
+service/kubernetes   ClusterIP   10.96.0.1      <none>        443/TCP    18h
+
+NAME                                       AGE
+gateway.networking.istio.io/demo-gateway   33m
+
+NAME                                                     GATEWAYS         HOSTS   AGE
+virtualservice.networking.istio.io/demo-virtualservice   [demo-gateway]   [*]     20m
+```
+
+With this virtual service configuration all endpoints under / will be mapped.
+
