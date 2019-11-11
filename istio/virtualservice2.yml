@@ -1,20 +1,18 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: simple-vs2
+  name: new-virtualservice
 spec:
   hosts:
   - '*'
   gateways:
-  - simple-gw
+  - demo-gateway
   http:
   - match:
     - uri:
-        prefix: /test
-    rewrite:
-      uri: /
+        prefix: /api/v1
     route:
     - destination:
-        host: test-svc.default.svc.cluster.local
+        host: newapp.default.svc.cluster.local
         port:
           number: 8080
