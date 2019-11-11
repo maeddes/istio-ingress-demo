@@ -139,3 +139,28 @@ The `API_ENDPOINT` variable specifies the endpoint. Requires redeployment.
           value: /matthias
 ``` 
 
+Deployment of Istio gateway:
+
+```
+kubectl apply -f istio/gateway.yml
+gateway.networking.istio.io/demo-gateway created
+````
+
+content of file:
+
+```yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: demo-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - '*'
+    port:
+      name: http
+      number: 80
+      protocol: HTTP
+ ```
