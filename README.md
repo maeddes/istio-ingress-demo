@@ -250,7 +250,46 @@ curl localhost/test
 this is static endpoint /test. api.endpoint is set to: /matthias
 ```
 
+Deploy and expose another service:
 
+```
+kubectl apply -f kubernetes/deploy-v2.yml
+deployment.extensions/newapp created
+
+kubectl expose deployment newapp --port=8080
+service/newapp exposed
+
+kubectl get deployment,service newapp
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.extensions/newapp   1/1     1            1           52s
+
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/newapp   ClusterIP   10.108.193.43   <none>        8080/TCP   15s
+```
+
+Expose to the Ingress via a new virtualservice:
+
+```
+kubectl apply -f istio/virtualservice2.yml
+virtualservice.networking.istio.io/new-virtualservice created
+```
+
+In this case the path mapping is directly to the exposed endpoint:
+```
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1
+    route:
+    - destination:
+        host: newapp.default.svc.cluster.local
+ ```
+ 
+ ```
+curl localhost/api/v1
+saying Hello from: /api/v1
+```
+ 
 
 
 
